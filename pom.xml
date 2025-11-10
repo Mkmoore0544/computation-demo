@@ -32,49 +32,31 @@
   </dependencies>
 
 <build>
-  <plugins>
-    <!-- Run JUnit 5 tests -->
-    <plugin>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-surefire-plugin</artifactId>
-      <version>3.2.5</version>
-      <configuration>
-        <useModulePath>false</useModulePath>
-      </configuration>
-    </plugin>
+    <plugins>
+        <!-- JaCoCo: Java Code Coverage Plugin -->
+        <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.8.12</version>
 
-    <!-- JaCoCo Code Coverage -->
-    <plugin>
-      <groupId>org.jacoco</groupId>
-      <artifactId>jacoco-maven-plugin</artifactId>
-      <version>0.8.12</version>
-      <executions>
-        <!-- Attach JaCoCo agent when tests run -->
-        <execution>
-          <id>prepare-agent</id>
-          <goals>
-            <goal>prepare-agent</goal>
-          </goals>
-        </execution>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>prepare-agent</goal>
+                    </goals>
+                </execution>
 
-        <!-- Generate report after tests -->
-        <execution>
-          <id>report</id>
-          <phase>verify</phase>
-          <goals>
-            <goal>report</goal>
-          </goals>
-          <configuration>
-            <reports>
-              <xml enabled="true"/>
-              <csv enabled="false"/>
-              <html enabled="true"/>
-            </reports>
-          </configuration>
-        </execution>
-      </executions>
-    </plugin>
-  </plugins>
+                <!-- Generate JaCoCo report after tests -->
+                <execution>
+                    <id>report</id>
+                    <phase>verify</phase>
+                    <goals>
+                        <goal>report</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
 </build>
 
 </project>

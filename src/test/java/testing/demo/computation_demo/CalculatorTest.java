@@ -79,4 +79,18 @@ public class CalculatorTest {
 	void divide_byZero() {
 		assertThrows(IllegalArgumentException.class, () -> calculator.divide(10, 0));
 	}
+	
+	class CalculatorCoverageTest {
+	    private final Calculator calc = new Calculator();
+
+	    @Test
+	    void divide_normal_positive() {
+	        assertEquals(2, calc.divide(4, 2));
+	    }
+
+	    @Test
+	    void divide_normal_signs() {
+	        assertEquals(-2, calc.divide(4, -2));
+	    }
+	}
 }
