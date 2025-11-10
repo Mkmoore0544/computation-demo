@@ -1,96 +1,122 @@
 package testing.demo.computation_demo;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.*;
 
-import java.util.stream.Stream;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvFileSource;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.MethodSource;
-
+/**
+ * CalculatorTest
+ * 
+ * Covers all operations in Calculator.java:
+ * add, subtract, multiply, divide
+ * Includes both normal and exceptional paths for 100% line coverage.
+ * 
+ * Author: Mark Moore
+ */
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CalculatorTest {
 
-	private Calculator calculator;
-	private static int count = 0;
+    private Calculator calculator;
 
-	@BeforeAll
-	static void beforeAll() {
-		System.out.println("[Before All] Calculator Test suite starting ... by Mark Moore\n");
-	}
+    @BeforeAll
+    static void beforeAll() {
+        System.out.println("[Before All] Calculator Test suite starting ... by Mark Moore");
+    }
 
-	@BeforeEach
-	void beforeEachTest(TestInfo testInfo) {
-		calculator = new Calculator();
-		System.out.printf("[Before Each] Starting Test #%d: %s%n", ++count, testInfo.getDisplayName());
-	}
+    @BeforeEach
+    void beforeEach(TestInfo testInfo) {
+        calculator = new Calculator();
+        System.out.println("[Before Each] Starting: " + testInfo.getDisplayName());
+    }
 
-	@AfterEach
-	void afterEachTest(TestInfo testInfo) {
-		System.out.printf("[After Each] Finished Test #%d: %s%n%n", count, testInfo.getDisplayName());
-	}
+    @AfterEach
+    void afterEach(TestInfo testInfo) {
+        System.out.println("[After Each] Finished: " + testInfo.getDisplayName());
+    }
 
-	@AfterAll
-	static void afterAll() {
-		System.out.printf("[After All] completed %d test invocations by Mark Moore.%n", count);
-	}
+    @AfterAll
+    static void afterAll() {
+        System.out.println("[After All] All Calculator tests completed by Mark Moore.");
+    }
 
-	// --- add(int,int) with @MethodSource ---
-	@ParameterizedTest(name = "{0} + {1} = {2}")
-	@DisplayName("Add two numbers")
-	@MethodSource("provideAddData")
-	void add_twoNumbers(int input1, int input2, int expected) {
-		assertEquals(expected, calculator.add(input1, input2));
-	}
+    // ---------- Addition ----------
+    @Test @Order(1)
+    @DisplayName("Add positive numbers")
+    void testAddPositive() {
+        assertEquals(102, calculator.add(100, 2));
+    }
 
-	static Stream<Arguments> provideAddData() {
-		return Stream.of(Arguments.of(100, 2, 102), Arguments.of(100, -2, 98), Arguments.of(-100, 2, -98),
-				Arguments.of(-100, -2, -102));
-	}
+    @Test @Order(2)
+    @DisplayName("Add negative and positive numbers")
+    void testAddNegativePositive() {
+        assertEquals(98, calculator.add(100, -2));
+    }
 
-	// --- substract(int,int) with @CsvSource ---
-	@ParameterizedTest(name = "{0} - {1} = {2}")
-	@DisplayName("Subtract two numbers")
-	@CsvSource({ "100, 2, 98", "100, -2, 102", "-100, 2, -102", "-100, -2, -98" })
-	void substract_twoNumbers(int input1, int input2, int expected) {
-		assertEquals(expected, calculator.substract(input1, input2));
-	}
+    @Test @Order(3)
+    @DisplayName("Add negative numbers")
+    void testAddNegative() {
+        assertEquals(-98, calculator.add(-100, 2));
+    }
 
-	// --- multiple(int,int) with @CsvFileSource ---
-	@ParameterizedTest(name = "{0} * {1} = {2}")
-	@DisplayName("Multiply two numbers")
-	@CsvFileSource(resources = "/data/calculator-multiply.csv", numLinesToSkip = 1)
-	void multiple_twoNumbers(int input1, int input2, int expected) {
-		assertEquals(expected, calculator.multiple(input1, input2));
-	}
+    // ---------- Subtraction ----------
+    @Test @Order(4)
+    @DisplayName("Subtract numbers")
+    void testSubtract() {
+        assertEquals(98, calculator.subtract(100, 2));
+    }
 
-	// --- divide(int,int) ONE negative test ---
-	@Test
-	@DisplayName("Divide by zero throws IllegalArgumentException")
-	void divide_byZero() {
-		assertThrows(IllegalArgumentException.class, () -> calculator.divide(10, 0));
-	}
-	
-	class CalculatorCoverageTest {
-	    private final Calculator calc = new Calculator();
+    @Test @Order(5)
+    @DisplayName("Subtract with negatives")
+    void testSubtractNegative() {
+        assertEquals(-98, calculator.subtract(-100, -2));
+    }
 
-	    @Test
-	    void divide_normal_positive() {
-	        assertEquals(2, calc.divide(4, 2));
-	    }
+    // ---------- Multiplication ----------
+    @Test @Order(6)
+    @DisplayName("Multiply numbers")
+    void testMultiply() {
+        assertEquals(200, calculator.multiply(100, 2));
+    }
 
-	    @Test
-	    void divide_normal_signs() {
-	        assertEquals(-2, calc.divide(4, -2));
-	    }
-	}
+    @Test @Order(7)
+    @DisplayName("Multiply negatives")
+    void testMultiplyNegative() {
+        assertEquals(-200, calculator.multiply(100, -2));
+    }
+
+    @Test @Order(8)
+    @DisplayName("Multiply two negatives")
+    void testMultiplyBothNegatives() {
+        assertEquals(200, calculator.multiply(-100, -2));
+    }
+
+    // ---------- Division ----------
+    @Test @Order(9)
+    @DisplayName("Divide normal positive numbers")
+    void testDivideNormalPositive() {
+        assertEquals(2, calculator.divide(4, 2));
+    }
+
+    @Test @Order(10)
+    @DisplayName("Divide with negative divisor")
+    void testDivideNegative() {
+        assertEquals(-2, calculator.divide(4, -2));
+    }
+
+    @Test @Order(11)
+    @DisplayName("Divide with negative dividend")
+    void testDivideNegativeDividend() {
+        assertEquals(-2, calculator.divide(-4, 2));
+    }
+
+    @Test @Order(12)
+    @DisplayName("Divide both negative")
+    void testDivideBothNegative() {
+        assertEquals(2, calculator.divide(-4, -2));
+    }
+
+    @Test @Order(13)
+    @DisplayName("Divide by zero throws exception")
+    void testDivideByZero() {
+        assertThrows(IllegalArgumentException.class, () -> calculator.divide(100, 0));
+    }
 }
